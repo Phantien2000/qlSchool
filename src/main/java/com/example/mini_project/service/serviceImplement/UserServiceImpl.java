@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -19,6 +20,8 @@ public class UserServiceImpl {
     int USER_PER_PAGE =3;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
     public List<User> findAll(){
         return userRepository.findAll();
 
@@ -33,7 +36,11 @@ public class UserServiceImpl {
 //        return userRepository.findByDepartmentId(departmentId, pageable);
 //    }
     public <S extends User> S save(S entity){
+
+        String encoder = passwordEncoder.encode(entity.getPassword());
+        entity.setPassword(encoder);
         return userRepository.save(entity);
+
     }
 
     public Optional<User> findById(Long id){
